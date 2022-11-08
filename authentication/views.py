@@ -22,7 +22,7 @@ def login_handle(request):
             login(request,user)
             return redirect('index')
         else:
-            messages.warning(request, 'Wrong username or password')
+            messages.error(request, 'Wrong username or password')
             return redirect('login')
 
 
@@ -40,11 +40,12 @@ def register(request):
                 last_name=data['last_name'],
             )
             user.save()
-            messages.success(request, 'Sign Up Success')
+            messages.success(request, 'Sign Up Success, Please Login')
+            return redirect('login')
         except:
             messages.error(
                 request, 'Registration failed, please check registration information again')
-        return redirect('register')
+            return redirect('register')
 
 
 def log_out(request):

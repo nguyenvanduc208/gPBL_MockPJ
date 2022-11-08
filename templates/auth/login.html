@@ -50,11 +50,12 @@
     <div class="bg-secondary rounded h-100 p-4">
       <h6 class="mb-4 text-center">Login</h6>
       {% if messages %}
-      <div class="alert alert-danger" role="alert">
         {% for mes in messages %}
+        <div class="alert alert-{% if mes.tags == 'error' %}danger{% else %}info{% endif %}" role="alert">
           {{mes}}
+        </div>
         {% endfor %}
-      </div>{% endif %}
+      {% endif %}
       <form method="POST" action="{% url 'login' %}" >
         {% csrf_token %}
         <div class="mb-3 ">

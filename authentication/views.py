@@ -32,6 +32,10 @@ def register(request):
         return render(request, 'auth/register.html')
     if request.method == 'POST':
         data = request.POST
+        if data['password'] is not data['re_password']:
+            messages.error(
+                request, 'Re-entered password is incorrect')
+            return redirect('register')
         try:
             user = User.objects.create_user(
                 username=data['username'],

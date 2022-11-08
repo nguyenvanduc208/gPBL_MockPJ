@@ -32,7 +32,7 @@ def register(request):
         return render(request, 'auth/register.html')
     if request.method == 'POST':
         data = request.POST
-        if data['password'] is not data['re_password']:
+        if data['password'] != data['re_password']:
             messages.error(
                 request, 'Re-entered password is incorrect')
             return redirect('register')
@@ -62,6 +62,8 @@ def change_password(request):
     if request.method == "GET":
         return render(request, 'auth/change_password.html')
     if request.method == "POST":
+        data = request.POST
+
         username = request.POST.get('username')
         old_password = request.POST.get('password')
         new_password = make_password(request.POST.get('new_password'))
@@ -70,6 +72,9 @@ def change_password(request):
 
         if user is None:
             messages.error(request, 'Wrong username or password')
+            return redirect('change_pass')
+        if data['new_password'] != data['re_new_password']:
+            messages.error(request, 'New password doesn\'t match')
             return redirect('change_pass')
         else:
             user_obj = User.objects.get(username=username)

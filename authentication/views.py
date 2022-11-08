@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.contrib.auth.hashers import make_password
 
 # Create your views here.
 
@@ -52,3 +53,23 @@ def log_out(request):
     if request.user.is_authenticated:
         logout(request)
         return redirect('login')
+
+def change_password(request):
+    if request.method == "GET":
+        return render(request, 'auth/change_password.html')
+    if request.method == "POST":
+        username = request.POST.get('username')
+        old_password = request.POST.get('password')
+        new_password = make_password(request.POST.get('new_password'))
+
+        user = authenticate(request, username=username, password=old_password)
+
+        if user is None:
+            messages.error(request, 'Wrong username or password')
+            return redirect('change_pass')
+        else:
+            user_obj = User.objects.get(username=username)
+            user_obj.password = new_password
+            user_obj.save()
+            messages.success(request, 'Change password success')
+            return redirect('login')
